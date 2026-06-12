@@ -1,65 +1,337 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="no-js">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>باستي Basty | تطبيق الكيك والحلويات الفاخرة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>باستي Basty | كيك فاخر مخصص — صُنع بإتقان، طبقة تلو الأخرى</title>
     <meta name="description" content="باستي: التطبيق الأول لتخصيص وطلب الكيك الفاخر والحلويات. صمم كعكتك طبقة بطبقة، من الإسفنجة الهشة إلى الشوكولاطة الداكنة عالية الكاكاو.">
     <meta name="keywords" content="كيك، حلويات، شوكولاطة داكنة، تطبيق باستي، طلب كيك مخصص، Basty">
-    
+    <meta name="theme-color" content="#1A1412">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="باستي Basty | كيك فاخر مخصص">
+    <meta property="og:description" content="صُنع بإتقان. طبقة تلو الأخرى. صمم كعكتك الفاخرة وحمّل التطبيق الآن.">
+    <meta property="og:image" content="assets/images/hero-cake.png">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="styles.css">
-    
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <!-- يفعّل وضع JS مبكراً لتجنب وميض المحتوى -->
+    <script>document.documentElement.classList.replace('no-js', 'js');</script>
+
+    <!-- مكتبات الحركة — مستضافة محلياً لموثوقية كاملة دون اعتماد على CDN -->
+    <script defer src="assets/vendor/lenis.min.js"></script>
+    <script defer src="assets/vendor/gsap.min.js"></script>
+    <script defer src="assets/vendor/ScrollTrigger.min.js"></script>
+    <script defer src="script.js"></script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "MobileApplication",
+        "name": "باستي Basty",
+        "operatingSystem": "iOS",
+        "applicationCategory": "LifestyleApplication",
+        "description": "تطبيق لتخصيص وطلب الكيك الفاخر — صمم كعكتك طبقة بطبقة."
+    }
+    </script>
 </head>
 <body>
 
-    <video id="bg-video" src="assets/basty-assembly.mp4" muted playsinline preload="auto"></video>
-    <div class="video-overlay"></div>
+    <a class="skip-link" href="#main">تخطّي إلى المحتوى الرئيسي</a>
 
-    <main id="app-container">
-        <section class="scroll-section" id="hero">
-            <div class="content-panel">
-                <h1>باستي <span>Basty</span></h1>
-                <p>صُنع بإتقان. طبقة تلو الأخرى.</p>
-                <div class="app-links">
-                    <a href="#" class="btn primary-btn">حمل التطبيق من App Store</a>
-                    <a href="#" class="btn secondary-btn">الانضمام للنسخة التجريبية (TestFlight)</a>
+    <!-- شاشة التحميل -->
+    <div class="preloader" id="preloader">
+        <svg class="preloader-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/>
+            <path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/>
+            <path d="M2 21h20"/>
+            <path d="M7 8v3"/><path d="M12 8v3"/><path d="M17 8v3"/>
+            <path d="M7 4h.01"/><path d="M12 4h.01"/><path d="M17 4h.01"/>
+        </svg>
+        <p class="preloader-name">باستي<span class="latin" lang="en">BASTY</span></p>
+        <span class="preloader-bar" aria-hidden="true"></span>
+    </div>
+
+    <!-- توهج ذهبي محيطي -->
+    <div class="ambient" aria-hidden="true">
+        <span class="ambient-blob ambient-blob--gold"></span>
+        <span class="ambient-blob ambient-blob--cocoa"></span>
+    </div>
+
+    <!-- شريط التنقل -->
+    <header class="site-header">
+        <nav class="nav glass" id="nav" aria-label="التنقل الرئيسي">
+            <a class="brand" href="#hero">باستي <span class="latin" lang="en">BASTY</span></a>
+            <ul class="nav-links">
+                <li><a href="#story">القصة</a></li>
+                <li><a href="#collection">التشكيلة</a></li>
+                <li><a href="#features">المميزات</a></li>
+            </ul>
+            <a href="#download" class="btn btn-primary btn-sm nav-cta">حمّل التطبيق</a>
+            <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="فتح القائمة">
+                <svg class="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/>
+                </svg>
+                <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <!-- قائمة الجوال -->
+    <div class="mobile-menu glass-strong" id="mobile-menu" aria-label="قائمة الجوال">
+        <a href="#story">القصة</a>
+        <a href="#collection">التشكيلة</a>
+        <a href="#features">المميزات</a>
+        <a href="#download" class="btn btn-primary">حمّل التطبيق</a>
+    </div>
+
+    <main id="main">
+
+        <!-- ===== القصة: فيديو التجميع المرتبط بالتمرير ===== -->
+        <section class="story-track" id="story" aria-label="قصة صناعة الكعكة">
+            <div class="stage">
+                <video id="bg-video" src="assets/basty-assembly.mp4" muted playsinline preload="auto" disablepictureinpicture tabindex="-1" aria-hidden="true"></video>
+                <div class="stage-overlay" aria-hidden="true"></div>
+
+                <!-- الفصل ٠: البطل -->
+                <div class="chapter chapter--center" data-chapter="0" id="hero">
+                    <div class="panel panel--hero glass">
+                        <p class="kicker">حلويات فاخرة عند الطلب</p>
+                        <h1>باستي<span class="latin" lang="en">BASTY</span></h1>
+                        <p class="lead">صُنع بإتقان. طبقة تلو الأخرى. صمّم كعكتك الفاخرة من الإسفنجة الهشّة إلى الشوكولاطة الداكنة، ونحن نتولّى الباقي.</p>
+                        <div class="cta-row">
+                            <a href="#download" class="btn btn-primary">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.56-1.701"/></svg>
+                                حمّل من App Store
+                            </a>
+                            <a href="#download" class="btn btn-ghost">انضم إلى TestFlight</a>
+                        </div>
+                    </div>
+                    <p class="scroll-cue">مرّر لمشاهدة القصة
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                    </p>
+                </div>
+
+                <!-- الفصل ١ -->
+                <div class="chapter chapter--start" data-chapter="1">
+                    <div class="panel glass">
+                        <p class="kicker">الفصل الأول</p>
+                        <h2>الأساس المثالي</h2>
+                        <p>إسفنجة هشّة مخبوزة بمعايير دقيقة، لتكون القاعدة الصلبة لتحفتك الفنية.</p>
+                    </div>
+                </div>
+
+                <!-- الفصل ٢ -->
+                <div class="chapter chapter--end" data-chapter="2">
+                    <div class="panel glass">
+                        <p class="kicker">الفصل الثاني</p>
+                        <h2>قلب الفانيلا الغني</h2>
+                        <p>طبقة سخيّة من كريمة الفانيلا الطبيعية، متوازنة وموزّعة بعناية فائقة.</p>
+                    </div>
+                </div>
+
+                <!-- الفصل ٣ -->
+                <div class="chapter chapter--start" data-chapter="3">
+                    <div class="panel glass">
+                        <p class="kicker">الفصل الثالث</p>
+                        <h2>تغليف الشوكولاطة الداكنة</h2>
+                        <p>غلاف فاخر من الشوكولاطة الداكنة بنسبة كاكاو عالية، لضمان النقاء والطعم العميق.</p>
+                    </div>
+                </div>
+
+                <!-- الفصل ٤ -->
+                <div class="chapter chapter--center" data-chapter="4">
+                    <div class="panel glass">
+                        <p class="kicker">الفصل الأخير</p>
+                        <h2>اكتملت الرؤية</h2>
+                        <p>مكسرات محمّصة ولمسات ذهبية، صُممت خصيصاً لتطابق ذوقك.</p>
+                        <a href="#download" class="btn btn-primary">ابدأ بتصميم كعكتك الآن</a>
+                    </div>
+                </div>
+
+                <!-- مؤشر تقدّم القصة -->
+                <nav class="rail" aria-label="تقدّم القصة">
+                    <span class="rail-line" aria-hidden="true"><span class="rail-fill" id="rail-fill"></span></span>
+                    <button class="rail-dot is-active" data-jump="0" aria-label="الانتقال إلى البداية"></button>
+                    <button class="rail-dot" data-jump="1" aria-label="الانتقال إلى الفصل الأول: الأساس"></button>
+                    <button class="rail-dot" data-jump="2" aria-label="الانتقال إلى الفصل الثاني: الحشوة"></button>
+                    <button class="rail-dot" data-jump="3" aria-label="الانتقال إلى الفصل الثالث: التغليف"></button>
+                    <button class="rail-dot" data-jump="4" aria-label="الانتقال إلى الفصل الأخير: اللمسة النهائية"></button>
+                </nav>
+            </div>
+        </section>
+
+        <!-- ===== التشكيلة ===== -->
+        <section class="section" id="collection">
+            <div class="container">
+                <header class="section-head" data-reveal>
+                    <p class="kicker">التشكيلة</p>
+                    <h2>إبداعات تُلهمك</h2>
+                    <p>أربع توقيعات من مختبر باستي — نقطة انطلاقك نحو كعكة لا تشبه إلا ذوقك.</p>
+                </header>
+                <div class="cards">
+                    <article class="card glass" data-reveal>
+                        <figure class="card-media">
+                            <img src="assets/images/catalog-dark-truffle.png" alt="كعكة ترافل الشوكولاطة الداكنة بطبقات الكاكاو والغاناش" width="848" height="1239" loading="lazy" decoding="async">
+                        </figure>
+                        <div class="card-body">
+                            <h3>ترافل الشوكولاطة الداكنة</h3>
+                            <p>كاكاو بنسبة عالية، غاناش حريري، ولمسات ذهبية أنيقة لعشّاق العمق.</p>
+                        </div>
+                    </article>
+                    <article class="card glass" data-reveal>
+                        <figure class="card-media">
+                            <img src="assets/images/catalog-korean-minimalist.png" alt="كعكة بتصميم كوري مينيمالي بكريمة ناعمة وخطوط هادئة" width="848" height="1239" loading="lazy" decoding="async">
+                        </figure>
+                        <div class="card-body">
+                            <h3>الكوري المينيمالي</h3>
+                            <p>نقاء التصميم الكوري: كريمة ناعمة، خطوط هادئة، وأناقة بلا تكلّف.</p>
+                        </div>
+                    </article>
+                    <article class="card glass" data-reveal>
+                        <figure class="card-media">
+                            <img src="assets/images/catalog-classic-wedding.png" alt="كعكة زفاف كلاسيكية متعددة الطوابق بتفاصيل ملكية" width="848" height="1239" loading="lazy" decoding="async">
+                        </figure>
+                        <div class="card-body">
+                            <h3>الزفاف الكلاسيكي</h3>
+                            <p>طوابق مهيبة وتفاصيل ملكية خالدة، ليوم لا يتكرر ولا يُنسى.</p>
+                        </div>
+                    </article>
+                    <article class="card glass" data-reveal>
+                        <figure class="card-media">
+                            <img src="assets/images/catalog-themed-party.png" alt="كعكة حفلات بطابع خاص بألوان وشخصيات مرحة" width="848" height="1239" loading="lazy" decoding="async">
+                        </figure>
+                        <div class="card-body">
+                            <h3>حفلات بطابع خاص</h3>
+                            <p>شخصيات وألوان نابضة بالحياة، تُصمم خصيصاً لتروي حكاية مناسبتكم.</p>
+                        </div>
+                    </article>
                 </div>
             </div>
         </section>
 
-        <section class="scroll-section" id="base">
-            <div class="content-panel float-right">
-                <h2>الأساس المثالي</h2>
-                <p>إسفنجة هشة ومخبوزة بمعايير دقيقة لتكون القاعدة الصلبة لتحفتك الفنية.</p>
+        <!-- ===== المميزات ===== -->
+        <section class="section" id="features">
+            <div class="container features-grid">
+                <div class="features-visual" data-reveal>
+                    <div class="frame glass">
+                        <img src="assets/images/hero-cake.png" alt="كعكة باستي الفاخرة بالشوكولاطة الداكنة واللمسات الذهبية" width="700" height="1023" loading="lazy" decoding="async">
+                    </div>
+                </div>
+                <div class="features-content">
+                    <header class="section-head" data-reveal>
+                        <p class="kicker">المميزات</p>
+                        <h2>صمّم كعكتك طبقة بطبقة</h2>
+                        <p>تطبيق باستي يضع مختبر الحلويات بين يديك — تحكّم بكل تفصيلة، ودع الإتقان علينا.</p>
+                    </header>
+                    <ul class="feature-list">
+                        <li data-reveal>
+                            <span class="feature-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>
+                            </span>
+                            <div>
+                                <h3>طبقة فوق طبقة</h3>
+                                <p>اختر الإسفنجة، الحشوة، والتغليف بحرّية كاملة من مكتبة مكونات فاخرة.</p>
+                            </div>
+                        </li>
+                        <li data-reveal>
+                            <span class="feature-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+                            </span>
+                            <div>
+                                <h3>تخصيص بلا حدود</h3>
+                                <p>ألوان، نقوش، وعبارات خاصة — كل تفصيلة تُصاغ على ذوقك ومناسبتك.</p>
+                            </div>
+                        </li>
+                        <li data-reveal>
+                            <span class="feature-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+                            </span>
+                            <div>
+                                <h3>توصيل بعناية فائقة</h3>
+                                <p>تغليف أنيق وتوصيل مبرّد يحافظ على الكمال حتى باب منزلك.</p>
+                            </div>
+                        </li>
+                        <li data-reveal>
+                            <span class="feature-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+                            </span>
+                            <div>
+                                <h3>جودة مضمونة</h3>
+                                <p>مكونات منتقاة بعناية ومعايير صارمة في كل خطوة من التحضير.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </section>
 
-        <section class="scroll-section" id="filling">
-            <div class="content-panel float-left">
-                <h2>قلب الفانيلا الغني</h2>
-                <p>طبقة سخية من كريمة الفانيلا الطبيعية، متوازنة وموزعة بعناية فائقة.</p>
+        <!-- ===== التحميل ===== -->
+        <section class="section" id="download">
+            <div class="container">
+                <div class="download-panel glass-strong" data-reveal>
+                    <p class="kicker">حمّل التطبيق</p>
+                    <h2>كعكتك تبدأ من هنا</h2>
+                    <p class="lead">حمّل تطبيق باستي وصمّم كعكة أحلامك في دقائق — من الفكرة إلى باب المنزل.</p>
+                    <div class="cta-row">
+                        <a href="#" class="btn btn-primary">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.56-1.701"/></svg>
+                            حمّل من App Store
+                        </a>
+                        <a href="#" class="btn btn-ghost">الانضمام للنسخة التجريبية (TestFlight)</a>
+                    </div>
+                    <p class="micro">متوفر حالياً على iOS — قريباً على Android</p>
+                </div>
             </div>
         </section>
 
-        <section class="scroll-section" id="coating">
-            <div class="content-panel float-right">
-                <h2>تغليف الشوكولاطة الداكنة</h2>
-                <p>غلاف فاخر من الشوكولاطة الداكنة بنسبة كاكاو عالية، لضمان النقاء والطعم العميق.</p>
-            </div>
-        </section>
-
-        <section class="scroll-section" id="finish">
-            <div class="content-panel center">
-                <h2>اكتملت الرؤية</h2>
-                <p>مكسرات محمصة ولمسات ذهبية، مصممة خصيصاً لتطابق ذوقك.</p>
-                <a href="#download" class="btn primary-btn">ابدأ بتصميم كعكتك الآن</a>
-            </div>
-        </section>
     </main>
 
-    <script src="script.js"></script>
+    <!-- ===== التذييل ===== -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <p class="brand">باستي <span class="latin" lang="en">BASTY</span></p>
+                    <p>حلويات فاخرة تُصنع عند الطلب — طبقة تلو الأخرى، بإتقان لا يقبل المساومة.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>استكشف</h3>
+                    <ul>
+                        <li><a href="#story">القصة</a></li>
+                        <li><a href="#collection">التشكيلة</a></li>
+                        <li><a href="#features">المميزات</a></li>
+                        <li><a href="#download">حمّل التطبيق</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>تابعنا</h3>
+                    <div class="social-row">
+                        <a href="#" aria-label="باستي على إنستغرام">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                        </a>
+                        <a href="#" aria-label="باستي على تيك توك">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+                        </a>
+                        <a href="#" aria-label="باستي على إكس">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 باستي. جميع الحقوق محفوظة.</p>
+                <p>صُنع بحب وشوكولاطة داكنة.</p>
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>
