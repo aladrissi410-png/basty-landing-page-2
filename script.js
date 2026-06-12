@@ -17,6 +17,11 @@
         chokes.
      3) Paint each decoded frame onto a <canvas> we control, rather
         than relying on the <video> element's own repaint timing.
+     4) Keep the canvas CONTAINED, not stretched: the backing store
+        stays at the video's native 1280×720 and the element lives
+        in a centered frame ≤ 860px wide. Downscaling keeps the
+        image sharp and the composited area small, so scrubbing
+        stays fast even on weak GPUs.
    The source MP4 is already Fast-Start + all-intra, so every seek
    is cheap and resolves quickly.
    ============================================================ */
