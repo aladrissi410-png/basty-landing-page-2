@@ -1,6 +1,7 @@
 /* ============================================================
    BASTY — Luxury Custom Cakes
-   Design System: Dark Liquid Glass · Cocoa & Gold
+   Design System: Dark Liquid Glass · Cocoa & Dusty Pink
+   Accent: Dusty Pink #D5A6A8 (replaces gold) on dark cocoa
    Pattern: Scroll-Triggered Storytelling + Feature-Rich
    ============================================================ */
 
@@ -13,22 +14,22 @@
     --cocoa-rich: #3B2A21;
 
     /* Glass */
-    --glass-bg: linear-gradient(160deg, rgba(46, 35, 28, 0.58), rgba(26, 20, 16, 0.46));
+    --glass-bg: linear-gradient(160deg, rgba(46, 37, 34, 0.58), rgba(26, 20, 16, 0.46));
     --glass-bg-strong: linear-gradient(160deg, rgba(40, 30, 24, 0.82), rgba(22, 17, 14, 0.74));
-    --glass-border: rgba(212, 175, 55, 0.16);
+    --glass-border: rgba(213, 166, 168, 0.18);
     --glass-highlight: rgba(247, 241, 230, 0.07);
     --hairline: rgba(247, 241, 230, 0.08);
 
-    /* Gold accent */
-    --gold: #D4AF37;
-    --gold-bright: #E9C964;
-    --gold-deep: #8A6D1F;
-    --gold-glow: rgba(212, 175, 55, 0.32);
+    /* Dusty pink accent (replaces gold) */
+    --pink: #D5A6A8;
+    --pink-bright: #E6C4C5;
+    --pink-deep: #B07E80;
+    --pink-glow: rgba(213, 166, 168, 0.34);
 
-    /* Text — verified ≥ 4.5:1 on all surfaces */
+    /* Text — verified ≥ 4.5:1 on dark surfaces */
     --text-primary: #F7F1E6;
     --text-muted: #CBBBA4;
-    --text-on-gold: #1A1208;
+    --text-on-pink: #2A1614;
 
     /* Typography */
     --font-heading: 'Amiri', 'Times New Roman', serif;
@@ -88,7 +89,8 @@ body {
 }
 
 img,
-video {
+video,
+canvas {
     display: block;
     max-width: 100%;
 }
@@ -116,12 +118,12 @@ ul {
 }
 
 ::selection {
-    background: rgba(212, 175, 55, 0.35);
+    background: rgba(213, 166, 168, 0.38);
     color: var(--text-primary);
 }
 
 :focus-visible {
-    outline: 2px solid var(--gold-bright);
+    outline: 2px solid var(--pink-bright);
     outline-offset: 3px;
     border-radius: 4px;
 }
@@ -146,7 +148,7 @@ html {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--gold-deep);
+    background: var(--pink-deep);
 }
 
 /* ---------- Typography ---------- */
@@ -186,7 +188,7 @@ p {
     font-size: 0.8125rem;
     font-weight: 500;
     letter-spacing: 0.16em;
-    color: var(--gold);
+    color: var(--pink);
 }
 
 .kicker::before,
@@ -194,12 +196,12 @@ p {
     content: "";
     width: 28px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold));
+    background: linear-gradient(90deg, transparent, var(--pink));
     opacity: 0.7;
 }
 
 .kicker::after {
-    background: linear-gradient(90deg, var(--gold), transparent);
+    background: linear-gradient(90deg, var(--pink), transparent);
 }
 
 .lead {
@@ -252,8 +254,8 @@ p {
     inset-inline-start: 12px;
     z-index: calc(var(--z-preloader) + 1);
     padding: 12px 20px;
-    background: var(--gold);
-    color: var(--text-on-gold);
+    background: var(--pink);
+    color: var(--text-on-pink);
     font-weight: 700;
     border-radius: var(--radius-sm);
     transform: translateY(-200%);
@@ -296,14 +298,14 @@ p {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--gold-bright), #C49A2C);
-    color: var(--text-on-gold);
-    box-shadow: 0 8px 32px -6px var(--gold-glow);
+    background: linear-gradient(135deg, var(--pink-bright), #C48E90);
+    color: var(--text-on-pink);
+    box-shadow: 0 8px 32px -6px var(--pink-glow);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 14px 40px -6px rgba(212, 175, 55, 0.5);
+    box-shadow: 0 14px 40px -6px rgba(213, 166, 168, 0.5);
 }
 
 .btn-primary:active {
@@ -311,14 +313,14 @@ p {
 }
 
 .btn-ghost {
-    background: rgba(212, 175, 55, 0.06);
-    border: 1px solid rgba(212, 175, 55, 0.45);
-    color: var(--gold-bright);
+    background: rgba(213, 166, 168, 0.07);
+    border: 1px solid rgba(213, 166, 168, 0.45);
+    color: var(--pink-bright);
 }
 
 .btn-ghost:hover {
-    background: rgba(212, 175, 55, 0.14);
-    border-color: var(--gold-bright);
+    background: rgba(213, 166, 168, 0.15);
+    border-color: var(--pink-bright);
     transform: translateY(-2px);
 }
 
@@ -351,17 +353,17 @@ p {
     border-radius: 50%;
 }
 
-.ambient-blob--gold {
+.ambient-blob--rose {
     top: -22vmax;
     inset-inline-start: -18vmax;
-    background: radial-gradient(circle, rgba(212, 175, 55, 0.09), transparent 62%);
+    background: radial-gradient(circle, rgba(213, 166, 168, 0.12), transparent 62%);
     animation: drift 52s var(--ease-out) infinite alternate;
 }
 
 .ambient-blob--cocoa {
     bottom: -26vmax;
     inset-inline-end: -20vmax;
-    background: radial-gradient(circle, rgba(90, 58, 40, 0.22), transparent 62%);
+    background: radial-gradient(circle, rgba(120, 72, 74, 0.22), transparent 62%);
     animation: drift 64s var(--ease-out) infinite alternate-reverse;
 }
 
@@ -392,7 +394,7 @@ p {
 .preloader-mark {
     width: 44px;
     height: 44px;
-    color: var(--gold);
+    color: var(--pink);
 }
 
 .preloader-name {
@@ -407,7 +409,7 @@ p {
     font-size: 0.8125rem;
     letter-spacing: 0.42em;
     text-align: center;
-    color: var(--gold);
+    color: var(--pink);
     margin-top: 4px;
 }
 
@@ -415,7 +417,7 @@ p {
     width: 160px;
     height: 2px;
     border-radius: var(--radius-pill);
-    background: rgba(212, 175, 55, 0.16);
+    background: rgba(213, 166, 168, 0.16);
     overflow: hidden;
 }
 
@@ -424,7 +426,7 @@ p {
     display: block;
     width: 40%;
     height: 100%;
-    background: var(--gold);
+    background: var(--pink);
     border-radius: inherit;
     animation: shimmer 1.4s var(--ease-out) infinite;
 }
@@ -473,19 +475,18 @@ body.is-ready .preloader {
 
 .brand {
     display: inline-flex;
-    align-items: baseline;
+    align-items: center;
     gap: 8px;
     font-family: var(--font-heading);
     font-size: 1.5rem;
     font-weight: 700;
     min-height: 44px;
-    align-items: center;
 }
 
 .brand .latin {
     font-size: 0.75rem;
     letter-spacing: 0.32em;
-    color: var(--gold);
+    color: var(--pink);
     font-weight: 500;
 }
 
@@ -508,8 +509,8 @@ body.is-ready .preloader {
 }
 
 .nav-links a:hover {
-    color: var(--gold-bright);
-    background: rgba(212, 175, 55, 0.08);
+    color: var(--pink-bright);
+    background: rgba(213, 166, 168, 0.1);
 }
 
 .nav-toggle {
@@ -525,7 +526,7 @@ body.is-ready .preloader {
 }
 
 .nav-toggle:hover {
-    background: rgba(212, 175, 55, 0.1);
+    background: rgba(213, 166, 168, 0.12);
 }
 
 .nav-toggle svg {
@@ -579,7 +580,7 @@ body.menu-open .mobile-menu {
 }
 
 .mobile-menu a:hover {
-    color: var(--gold-bright);
+    color: var(--pink-bright);
 }
 
 .mobile-menu .btn {
@@ -589,7 +590,7 @@ body.menu-open .mobile-menu {
 }
 
 /* ============================================================
-   STORY — Scroll-driven video scrubbing
+   STORY — Scroll-driven video scrubbing (canvas-rendered)
    Track height creates the scroll runway; the stage is sticky.
    ============================================================ */
 .story-track {
@@ -600,16 +601,36 @@ body.menu-open .mobile-menu {
 .stage {
     position: relative;
     overflow: hidden;
+    background: var(--bg-base);
 }
 
-#bg-video {
+#bg-video,
+#story-canvas {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: brightness(0.82) saturate(1.05);
     pointer-events: none;
+}
+
+#bg-video {
+    filter: brightness(0.82) saturate(1.05);
+    transition: opacity var(--dur-med) var(--ease-out);
+}
+
+#story-canvas {
+    display: none;
+    filter: brightness(0.82) saturate(1.05);
+}
+
+/* Canvas engine active: canvas paints, source video stays hidden but decoding */
+.stage.canvas-on #story-canvas {
+    display: block;
+}
+
+.stage.canvas-on #bg-video {
+    opacity: 0;
 }
 
 .stage-overlay {
@@ -717,7 +738,7 @@ html.js:not(.reduced-motion) .chapter[data-chapter="0"] {
     font-size: clamp(0.9375rem, 2vw, 1.125rem);
     font-weight: 500;
     letter-spacing: 0.45em;
-    color: var(--gold);
+    color: var(--pink);
     margin-top: 6px;
 }
 
@@ -739,7 +760,7 @@ html.js:not(.reduced-motion) .chapter[data-chapter="0"] {
 .scroll-cue svg {
     width: 18px;
     height: 18px;
-    color: var(--gold);
+    color: var(--pink);
     animation: cue-bob 2.2s var(--ease-out) infinite;
 }
 
@@ -779,7 +800,7 @@ html.js:not(.reduced-motion) .rail {
     top: 22px;
     bottom: 22px;
     width: 2px;
-    background: rgba(212, 175, 55, 0.18);
+    background: rgba(213, 166, 168, 0.18);
     border-radius: var(--radius-pill);
     overflow: hidden;
 }
@@ -788,7 +809,7 @@ html.js:not(.reduced-motion) .rail {
     display: block;
     width: 100%;
     height: 100%;
-    background: var(--gold);
+    background: var(--pink);
     transform: scaleY(0);
     transform-origin: top;
 }
@@ -811,19 +832,19 @@ html.js:not(.reduced-motion) .rail {
     height: 9px;
     border-radius: 50%;
     background: var(--bg-elevated);
-    border: 1px solid rgba(212, 175, 55, 0.45);
+    border: 1px solid rgba(213, 166, 168, 0.45);
     transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
 }
 
 .rail-dot:hover::after {
     transform: scale(1.3);
-    border-color: var(--gold-bright);
+    border-color: var(--pink-bright);
 }
 
 .rail-dot.is-active::after {
-    background: var(--gold);
+    background: var(--pink);
     transform: scale(1.35);
-    box-shadow: 0 0 14px var(--gold-glow);
+    box-shadow: 0 0 14px var(--pink-glow);
 }
 
 @media (max-width: 767px) {
@@ -868,11 +889,11 @@ html.js:not(.reduced-motion) .rail {
 
 .card:hover {
     transform: translateY(-8px);
-    border-color: rgba(212, 175, 55, 0.45);
+    border-color: rgba(213, 166, 168, 0.45);
     box-shadow:
         inset 0 1px 0 var(--glass-highlight),
         0 28px 56px -16px rgba(10, 6, 4, 0.6),
-        0 0 36px -8px var(--gold-glow);
+        0 0 36px -8px var(--pink-glow);
 }
 
 .card-media {
@@ -921,7 +942,7 @@ html.js:not(.reduced-motion) .rail {
     content: "";
     position: absolute;
     inset: -12%;
-    background: radial-gradient(circle, rgba(212, 175, 55, 0.16), transparent 64%);
+    background: radial-gradient(circle, rgba(213, 166, 168, 0.18), transparent 64%);
     pointer-events: none;
 }
 
@@ -962,9 +983,9 @@ html.js:not(.reduced-motion) .rail {
     width: 56px;
     height: 56px;
     border-radius: var(--radius-md);
-    background: rgba(212, 175, 55, 0.07);
+    background: rgba(213, 166, 168, 0.08);
     border: 1px solid var(--glass-border);
-    color: var(--gold);
+    color: var(--pink);
 }
 
 .feature-icon svg {
@@ -997,7 +1018,7 @@ html.js:not(.reduced-motion) .rail {
     top: -40%;
     inset-inline: 15%;
     height: 70%;
-    background: radial-gradient(ellipse, rgba(212, 175, 55, 0.16), transparent 68%);
+    background: radial-gradient(ellipse, rgba(213, 166, 168, 0.18), transparent 68%);
     pointer-events: none;
 }
 
@@ -1052,7 +1073,7 @@ html.js:not(.reduced-motion) .rail {
     font-size: 0.875rem;
     font-weight: 700;
     letter-spacing: 0.14em;
-    color: var(--gold);
+    color: var(--pink);
     margin-bottom: 16px;
 }
 
@@ -1070,7 +1091,7 @@ html.js:not(.reduced-motion) .rail {
 }
 
 .footer-col a:hover {
-    color: var(--gold-bright);
+    color: var(--pink-bright);
 }
 
 .social-row {
@@ -1091,8 +1112,8 @@ html.js:not(.reduced-motion) .rail {
 }
 
 .social-row a:hover {
-    color: var(--gold-bright);
-    border-color: rgba(212, 175, 55, 0.45);
+    color: var(--pink-bright);
+    border-color: rgba(213, 166, 168, 0.45);
     transform: translateY(-2px);
 }
 
@@ -1112,8 +1133,6 @@ html.js:not(.reduced-motion) .rail {
     font-size: 0.875rem;
     color: var(--text-muted);
 }
-
-/* ---------- Reveal states (set by JS only — content visible without it) ---------- */
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1023px) {
@@ -1148,6 +1167,13 @@ html.js:not(.reduced-motion) .rail {
     .chapter {
         padding-inline: 20px;
         justify-content: center;
+    }
+
+    /* Bottom-anchored mobile hero: content settles toward the lower viewport */
+    #hero.chapter {
+        justify-content: flex-end;
+        gap: 28px;
+        padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
     }
 
     .panel {
