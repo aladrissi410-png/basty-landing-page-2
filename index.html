@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>باستي Basty | تطبيق الكيك والحلويات الفاخرة</title>
+    <meta name="description" content="باستي: التطبيق الأول لتخصيص وطلب الكيك الفاخر والحلويات. صمم كعكتك طبقة بطبقة، من الإسفنجة الهشة إلى الشوكولاطة الداكنة عالية الكاكاو.">
+    <meta name="keywords" content="كيك، حلويات، شوكولاطة داكنة، تطبيق باستي، طلب كيك مخصص، Basty">
+    
+    <link rel="stylesheet" href="styles.css">
+    
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body>
+
+    <video id="bg-video" src="assets/basty-rotational-assembly.mp4" muted playsinline preload="auto"></video>
+    <div class="video-overlay"></div>
+
+    <main id="app-container">
+        <section class="scroll-section" id="hero">
+            <div class="content-panel">
+                <h1>باستي <span>Basty</span></h1>
+                <p>صُنع بإتقان. طبقة تلو الأخرى.</p>
+                <div class="app-links">
+                    <a href="#" class="btn primary-btn">حمل التطبيق من App Store</a>
+                    <a href="#" class="btn secondary-btn">الانضمام للنسخة التجريبية (TestFlight)</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="scroll-section" id="base">
+            <div class="content-panel float-right">
+                <h2>الأساس المثالي</h2>
+                <p>إسفنجة هشة ومخبوزة بمعايير دقيقة لتكون القاعدة الصلبة لتحفتك الفنية.</p>
+            </div>
+        </section>
+
+        <section class="scroll-section" id="filling">
+            <div class="content-panel float-left">
+                <h2>قلب الفانيلا الغني</h2>
+                <p>طبقة سخية من كريمة الفانيلا الطبيعية، متوازنة وموزعة بعناية فائقة.</p>
+            </div>
+        </section>
+
+        <section class="scroll-section" id="coating">
+            <div class="content-panel float-right">
+                <h2>تغليف الشوكولاطة الداكنة</h2>
+                <p>غلاف فاخر من الشوكولاطة الداكنة بنسبة كاكاو عالية، لضمان النقاء والطعم العميق.</p>
+            </div>
+        </section>
+
+        <section class="scroll-section" id="finish">
+            <div class="content-panel center">
+                <h2>اكتملت الرؤية</h2>
+                <p>مكسرات محمصة ولمسات ذهبية، مصممة خصيصاً لتطابق ذوقك.</p>
+                <a href="#download" class="btn primary-btn">ابدأ بتصميم كعكتك الآن</a>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
