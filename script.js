@@ -1,6 +1,24 @@
 /* ============================================================
    BASTY — Luxury Scroll Experience
-   GSAP + ScrollTrigger video scrubbing · Lenis smooth scroll
+   High-performance canvas video scrubbing · Lenis smooth scroll
+
+   Why canvas + a single-seek controller?
+   ----------------------------------------------------------
+   Setting video.currentTime on every scroll tick queues seeks
+   faster than the decoder can present frames. The backlog makes
+   the browser drop frames and stutter ("seek latency").
+
+   Instead we:
+     1) Drive ONE seek at a time (single-in-flight). A new seek is
+        issued only after the previous frame is actually decoded
+        (the 'seeked' event / requestVideoFrameCallback).
+     2) Throttle issuance to ~30Hz — the eye reads scrubbing as
+        smooth well below per-frame seeking, and the decoder never
+        chokes.
+     3) Paint each decoded frame onto a <canvas> we control, rather
+        than relying on the <video> element's own repaint timing.
+   The source MP4 is already Fast-Start + all-intra, so every seek
+   is cheap and resolves quickly.
    ============================================================ */
 (() => {
     "use strict";
@@ -8,7 +26,6 @@
     const docEl = document.documentElement;
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // في حال تفضيل تقليل الحركة أو فشل تحميل GSAP: نعود للتخطيط الثابت الكامل
     const gsapReady = typeof window.gsap !== "undefined" && typeof window.ScrollTrigger !== "undefined";
     const motionOK = gsapReady && !prefersReduced;
 
@@ -22,8 +39,8 @@
 
     /* ---------- شاشة التحميل ---------- */
     const video = document.getElementById("bg-video");
-    const MIN_SPLASH = 450;   // أقل مدة عرض لتجنب الوميض
-    const MAX_SPLASH = 2800;  // مهلة قصوى حتى لو تأخر الفيديو
+    const MIN_SPLASH = 450;
+    const MAX_SPLASH = 2800;
     const splashStart = performance.now();
     let splashDone = false;
 
@@ -62,7 +79,6 @@
 
     const NAV_OFFSET = 88;
 
-    // تمرير سلس نحو هدف (مع احتساب ارتفاع شريط التنقل)
     const scrollToTarget = (target) => {
         if (lenis) {
             lenis.scrollTo(target, { offset: -NAV_OFFSET });
@@ -87,7 +103,6 @@
 
     /* ---------- قائمة الجوال ---------- */
     const navToggle = document.getElementById("nav-toggle");
-    const mobileMenu = document.getElementById("mobile-menu");
 
     const setMenu = (open) => {
         document.body.classList.toggle("menu-open", open);
@@ -126,48 +141,103 @@
     });
 
     /* ============================================================
-       قصة التجميع: ربط الفيديو بالتمرير (Scrubbing)
+       محرك السحب: ربط الفيديو بالتمرير عبر Canvas عالي الأداء
        ============================================================ */
     const track = document.getElementById("story");
+    const stage = track ? track.querySelector(".stage") : null;
+    const canvas = document.getElementById("story-canvas");
     const CHAPTERS = 5;
 
-    if (motionOK && video && track) {
+    if (motionOK && video && track && canvas && canvas.getContext) {
 
-        /* --- 1) تحريك إطارات الفيديو بنعومة (lerp) ---
-           بدلاً من تعيين currentTime مباشرة عند كل حدث تمرير،
-           نقترب من الزمن الهدف تدريجياً في كل إطار رسم،
-           فيظهر الفيديو وكأنه يُسحب بسلاسة زجاجية. */
-        let targetTime = 0;
-        let smoothTime = 0;
-        let lastApplied = -1;
-        let videoReady = false;
+        const ctx = canvas.getContext("2d", { alpha: false, desynchronized: true });
+        const hasRVFC = typeof video.requestVideoFrameCallback === "function";
+
+        // معدّل السحب: ~30 إطاراً/ث كافٍ بصرياً ويمنع اختناق فك التشفير
+        const SEEK_HZ = 30;
+        const SEEK_INTERVAL = 1000 / SEEK_HZ;
+        const FRAME_DUR = 1 / 24; // الفيديو 24fps
+
+        let scrubReady = false;
+        let scrollTime = 0;   // الزمن المستهدف من التمرير
+        let smoothTime = 0;   // زمن مُنعّم (lerp) لإحساس سلس عند التوقف
+        let seeking = false;  // عملية بحث واحدة فقط قيد التنفيذ
+        let lastSeekAt = 0;
+        let drawnTime = -1;
+
+        const sizeCanvas = () => {
+            const w = video.videoWidth || 1280;
+            const h = video.videoHeight || 720;
+            if (canvas.width !== w || canvas.height !== h) {
+                canvas.width = w;
+                canvas.height = h;
+            }
+        };
+
+        const paint = () => {
+            if (!video.videoWidth) return;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            drawnTime = video.currentTime;
+        };
+
+        const onFrameReady = () => {
+            paint();
+            seeking = false;
+        };
+
+        // 'seeked' هو الإشارة الموثوقة بأن الإطار فُكّ تشفيره وأصبح جاهزاً
+        video.addEventListener("seeked", onFrameReady);
+
+        // المضخّة: تُستدعى ضمن حلقة الرسم، لكنها تُصدر بحثاً واحداً مقيّداً بالمعدّل
+        const pump = () => {
+            if (!scrubReady) return;
+
+            // تنعيم لطيف نحو هدف التمرير (إحساس زجاجي عند الاستقرار)
+            smoothTime += (scrollTime - smoothTime) * 0.18;
+
+            if (seeking) return;                                  // بحث واحد فقط في كل مرة
+            if (performance.now() - lastSeekAt < SEEK_INTERVAL) return; // تقييد المعدّل
+            if (Math.abs(smoothTime - drawnTime) < FRAME_DUR * 0.5) return; // قريب بما يكفي
+
+            seeking = true;
+            lastSeekAt = performance.now();
+            video.currentTime = smoothTime;
+
+            // rVFC: نرسم فور تقديم الإطار فعلياً (أدق من انتظار 'seeked' وحده)
+            if (hasRVFC) {
+                video.requestVideoFrameCallback(onFrameReady);
+            }
+        };
 
         const initScrub = () => {
-            if (videoReady || !video.duration) return;
-            videoReady = true;
+            if (scrubReady || !video.duration) return;
+            sizeCanvas();
+            if (stage) stage.classList.add("canvas-on");
             video.pause();
-            video.currentTime = 0;
+            scrubReady = true;
 
+            // ارسم الإطار الأول فور توفّره
+            const firstFrame = () => paint();
+            if (video.readyState >= 2) {
+                video.currentTime = 0;
+            } else {
+                video.addEventListener("loadeddata", () => { video.currentTime = 0; }, { once: true });
+            }
+            video.addEventListener("seeked", firstFrame, { once: true });
+
+            // اربط تقدّم التمرير بالزمن المستهدف فقط (دون أي بحث مباشر هنا)
             ScrollTrigger.create({
                 trigger: track,
                 start: "top top",
                 end: "bottom bottom",
                 scrub: true,
                 onUpdate: (self) => {
-                    targetTime = self.progress * Math.max(0, video.duration - 0.08);
+                    scrollTime = self.progress * Math.max(0, video.duration - 0.05);
                 }
             });
 
-            gsap.ticker.add(() => {
-                const delta = targetTime - smoothTime;
-                if (Math.abs(delta) < 0.001) return;
-                smoothTime = Math.abs(delta) < 0.02 ? targetTime : smoothTime + delta * 0.14;
-                // لا نطلب إطاراً جديداً إلا عند فرق ملموس (~إطار واحد)
-                if (Math.abs(smoothTime - lastApplied) > 0.016) {
-                    video.currentTime = smoothTime;
-                    lastApplied = smoothTime;
-                }
-            });
+            // حلقة الرسم الموحّدة عبر مؤقّت GSAP
+            gsap.ticker.add(pump);
         };
 
         if (video.readyState >= 1) {
@@ -176,7 +246,7 @@
             video.addEventListener("loadedmetadata", initScrub, { once: true });
         }
 
-        // iOS/Safari: لمسة واحدة تكفي لفتح صلاحية التحكم بإطارات الفيديو
+        // iOS/Safari: لمسة واحدة تفتح صلاحية فكّ إطارات الفيديو
         const unlockVideo = () => {
             const p = video.play();
             if (p && typeof p.then === "function") {
@@ -186,8 +256,7 @@
         window.addEventListener("touchstart", unlockVideo, { once: true, passive: true });
         window.addEventListener("pointerdown", unlockVideo, { once: true });
 
-        /* --- 2) خط زمني للفصول: ظهور واختفاء متزامن مع التمرير ---
-           كل فصل يدخل، يثبت عند مركز مقطعه (i/4)، ثم يغادر. */
+        /* --- خط زمني للفصول: ظهور واختفاء متزامن مع التمرير --- */
         const chapters = gsap.utils.toArray(".chapter");
         const railFill = document.getElementById("rail-fill");
         const dots = gsap.utils.toArray(".rail-dot");
@@ -200,20 +269,18 @@
                 end: "bottom bottom",
                 scrub: true,
                 onUpdate: (self) => {
-                    // مزامنة النقطة النشطة في مؤشر التقدم
                     const idx = Math.round(self.progress * (CHAPTERS - 1));
                     dots.forEach((d, i) => d.classList.toggle("is-active", i === idx));
                 }
             }
         });
 
-        // نوافذ العرض لكل فصل على مدى تقدّم 0 → 1
         const windows = [
-            { in: null,          out: [0.05, 0.15] },   // البطل: ظاهر منذ البداية
+            { in: null,          out: [0.05, 0.15] },
             { in: [0.17, 0.23],  out: [0.30, 0.36] },
             { in: [0.42, 0.48],  out: [0.55, 0.61] },
             { in: [0.67, 0.73],  out: [0.79, 0.85] },
-            { in: [0.88, 0.96],  out: null }            // الختام: يبقى حتى النهاية
+            { in: [0.88, 0.96],  out: null }
         ];
 
         chapters.forEach((chapter, i) => {
@@ -233,12 +300,11 @@
             }
         });
 
-        // تعبئة خط التقدم الذهبي
         if (railFill) {
             tl.fromTo(railFill, { scaleY: 0 }, { scaleY: 1, duration: 1 }, 0);
         }
 
-        /* --- 3) نقاط القفز بين الفصول --- */
+        /* --- نقاط القفز بين الفصول --- */
         const jumpTo = (i) => {
             const trackTop = track.getBoundingClientRect().top + window.scrollY;
             const runway = track.scrollHeight - window.innerHeight;
@@ -256,8 +322,11 @@
             });
         });
 
+        // أعد ضبط أبعاد اللوحة عند تغيّر حجم النافذة
+        window.addEventListener("resize", sizeCanvas, { passive: true });
+
     } else if (video) {
-        // وضع الحركة المخفّضة: نعرض الإطار الأول كخلفية ثابتة
+        // وضع الحركة المخفّضة: الإطار الأول كخلفية ثابتة (الفيديو ظاهر، بلا Canvas)
         const freezeFrame = () => {
             video.pause();
             video.currentTime = 0;
@@ -289,7 +358,6 @@
             onEnterBack: reveal
         });
 
-        // إعادة الحساب بعد اكتمال تحميل الصور
         window.addEventListener("load", () => ScrollTrigger.refresh());
     }
 })();
